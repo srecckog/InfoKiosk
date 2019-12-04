@@ -433,6 +433,7 @@
             this.button1.TabIndex = 3;
             this.button1.Text = "Prikaži";
             this.button1.UseVisualStyleBackColor = true;
+            this.button1.Visible = false;
             // 
             // radioButton3
             // 
@@ -624,11 +625,11 @@
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(1512, 607);
             this.ControlBox = false;
+            this.Controls.Add(this.panel1);
             this.Controls.Add(this.panel2);
             this.Controls.Add(this.panel4);
             this.Controls.Add(this.pnl_poruke);
             this.Controls.Add(this.Odjava);
-            this.Controls.Add(this.panel1);
             this.Controls.Add(this.label1);
             this.Controls.Add(this.menuStrip1);
             this.KeyPreview = true;

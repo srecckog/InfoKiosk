@@ -23,7 +23,7 @@ namespace InfoKiosk
 {
     public partial class Form1 : Form
     {
-        public string connectionString = @"Data Source=192.168.0.3;Initial Catalog=RFIND;User ID=sa;Password=AdminFX9.";
+        public string connectionString = @"Data Source=192.168.0.3;Initial Catalog=fx_RFIND;User ID=sa;Password=AdminFX9.";
         public static string pprezimer, idradnika1, idfirme, idradnika0,idprijave;
         public int idporuke;
 
@@ -120,6 +120,13 @@ namespace InfoKiosk
             sql1 = "select e.Datum,e.Hala,e.smjena,e.linija,e.Brojrn,e.Norma,0 Planirano,e.Kolicinaok , e.OtpadObrada,Napomena1,e.Id_pro,p.nazivpro,e.Vrijemeod,e.Vrijemedo,''  UkupnoMinuta " +
                                 "from feroapp.dbo.evidencijanormiview e left join feroapp.dbo.radnici r on r.id_radnika = e.id_radnika left join feroapp.dbo.Proizvodi p on p.id_pro = e.id_pro where r.ID_Fink= " + idradnika0 + "  and r.id_firme=" + idfirme + "  and DATEDIFF(month,e.datum, GETDATE()) <= 13 order by e.datum desc";
 
+
+            int id1 = int.Parse(idradnika0);
+
+            if (id1 > 8000)
+                  idradnika0 = (id1 - 8000).ToString();
+
+            sql1 ="fx_rfind.dbo.InfoKiosk_Norme "+idradnika0+", " + idfirme ;
             
             SqlDataAdapter dataadapter = new SqlDataAdapter(sql1, connection);
             DataSet ds = new DataSet();
@@ -132,7 +139,7 @@ namespace InfoKiosk
             dgv_zbirni.DataSource = ds;
             dgv_zbirni.DataMember = "eventn";
             double minuta = 0.0;
-            int norm1 = 0, norm = 0;
+            int norm1 = 0, norm = 0,kol=0;
 
             foreach (DataGridViewRow row in dgv_zbirni.Rows)
             {
@@ -161,25 +168,37 @@ namespace InfoKiosk
                     }
 
                     norm1 = (int.Parse)(row.Cells[5].Value.ToString());
-                    int kol = (int.Parse)(row.Cells[7].Value.ToString());
-                    string ts1 = row.Cells[12].Value.ToString();
-                    string ts2 = row.Cells[13].Value.ToString();
-                    minuta = 0;
-                    if (ts1.Length > 0 && ts2.Length > 0)
+                    
+                    if (row.Cells[7].Value == DBNull.Value)
                     {
-                        TimeSpan t1 = (TimeSpan.Parse(ts1));
-                        TimeSpan t2 = (TimeSpan.Parse(ts2));
-                        if (t2 < t1)
-                        {
-                            minuta = t2.TotalMinutes + 1440 - t1.TotalMinutes;
-                        }
-                        else
-                        {
-                            minuta = t2.TotalMinutes - t1.TotalMinutes;
-                        }
+                        kol = 0;
                     }
-                    row.Cells[14].Value = minuta.ToString();
-                    norm = (int)(norm1 * minuta / (480.0));
+                    else
+                    {
+                        kol = (int.Parse)(row.Cells[7].Value.ToString());
+                    }
+
+                    //string ts1 = row.Cells[12].Value.ToString();
+                    //string ts2 = row.Cells[13].Value.ToString();
+                    //minuta = 0;
+                    //if (ts1.Length > 0 && ts2.Length > 0)
+                    //{
+                    //    TimeSpan t1 = (TimeSpan.Parse(ts1));
+                    //    TimeSpan t2 = (TimeSpan.Parse(ts2));
+                    //    if (t2 < t1)
+                    //    {
+                    //        minuta = t2.TotalMinutes + 1440 - t1.TotalMinutes;
+                    //    }
+                    //    else
+                    //    {
+                    //        minuta = t2.TotalMinutes - t1.TotalMinutes;
+                    //    }
+                    //}
+
+                    string min1 = row.Cells[11].Value.ToString().Replace(',','.');
+                    double minuta1 = (double.Parse)(min1)/100;
+                    //row.Cells[14].Value = minuta.ToString();
+                    norm = (int)(norm1 * minuta1 / (480.0));
                     row.Cells[6].Value = norm.ToString();
 
 
@@ -188,19 +207,25 @@ namespace InfoKiosk
                         //                            row.Cells[6].Style.BackColor = System.Drawing.Color.LawnGreen;
                         row.Cells[6].Style.BackColor = System.Drawing.Color.LawnGreen;
                         row.Cells[5].Style.BackColor = System.Drawing.Color.LawnGreen;
+                        row.Cells[7].Style.BackColor = System.Drawing.Color.LawnGreen;
+                        row.Cells[8].Style.BackColor = System.Drawing.Color.LawnGreen;
                     }
                     if ((kol) <= (norm*0.9))
                     {
                         //                            row.Cells[6].Style.BackColor = System.Drawing.Color.LawnGreen;
-                        row.Cells[6].Style.BackColor = System.Drawing.Color.Red;
-                        row.Cells[5].Style.BackColor = System.Drawing.Color.Red;
+                        
+                        row.Cells[6].Style.BackColor = System.Drawing.Color.Chocolate;
+                        row.Cells[5].Style.BackColor = System.Drawing.Color.Chocolate;
+                        row.Cells[7].Style.BackColor = System.Drawing.Color.Chocolate;
+                        row.Cells[8].Style.BackColor = System.Drawing.Color.Chocolate;
                     }
                     if ((kol) <= (norm * 0.7))
                     {
                         //                            row.Cells[6].Style.BackColor = System.Drawing.Color.LawnGreen;
-                        row.Cells[6].Style.BackColor = System.Drawing.Color.Chocolate;
-                        row.Cells[5].Style.BackColor = System.Drawing.Color.Chocolate;
-                        row.Cells[7].Style.BackColor = System.Drawing.Color.Chocolate;
+                        row.Cells[6].Style.BackColor = System.Drawing.Color.Red;
+                        row.Cells[5].Style.BackColor = System.Drawing.Color.Red;
+                        row.Cells[7].Style.BackColor = System.Drawing.Color.Red;
+                        row.Cells[8].Style.BackColor = System.Drawing.Color.Red;
                     }
 
 
