@@ -35,7 +35,7 @@ namespace InfoKiosk
             InitializeComponent();
             this.ActiveControl = textBox1;
         }
-        public string connectionString = @"Data Source=192.168.0.3;Initial Catalog=RFIND;User ID=sa;Password=AdminFX9.";
+        public string connectionString = @"Data Source=192.168.0.3;Initial Catalog=fx_RFIND;User ID=sa;Password=AdminFX9.";
         public static string prezimer,lbltxt,idradnika,idradnika0,idfirme,idprijave;
 
         private void Button1_Click(object sender, EventArgs e)
@@ -77,7 +77,7 @@ namespace InfoKiosk
             //    timer1.Start();
             //}
         
-                string connectionString = @"Data Source=192.168.0.3;Initial Catalog=RFIND;User ID=sa;Password=AdminFX9.";
+                string connectionString = @"Data Source=192.168.0.3;Initial Catalog=fx_RFIND;User ID=sa;Password=AdminFX9.";
                 SqlConnection cn0 = new SqlConnection(connectionString);
                 cn0.Open();
 
@@ -244,7 +244,7 @@ namespace InfoKiosk
                     else   // čitač iz pogona čita samo drugi dio rfid
                     {
                     //sqlCommand1 = new SqlCommand("select * from radnici_   where RIGHT(rfid2, LEN(rfid2) - CHARINDEX('-', rfid2))='" + rfidd.ToString() + "'", cn1);
-                    sqlCommand1 = new SqlCommand("select r.* from badge b left join radnici_ r on r.id=b.extid  where b.active=1 and b.badgeno='" + hexValue+ "'", cn1);
+                    sqlCommand1 = new SqlCommand("select r.* from rfind.dbo.badge b left join radnici_ r on r.id=b.extid  where b.active=1 and b.badgeno='" + hexValue+ "'", cn1);
                 }
 
 
